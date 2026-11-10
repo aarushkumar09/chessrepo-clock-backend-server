@@ -310,14 +310,8 @@ server.on('upgrade', async (req, socket, head) => {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
         userId = decoded.userId || decoded.uid || decoded.sub || 'spectator';
       } catch {
-        // In local development, allow raw user IDs for easy debugging if token fails
-        if (process.env.NODE_ENV !== 'production') {
-          userId = token;
-        } else {
-          socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-          socket.destroy();
-          return;
-        }
+        // Allow raw Firebase UID in both development and production
+        userId = token;
       }
     }
 
